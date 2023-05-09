@@ -58,11 +58,12 @@ std::tuple<int, int> countMatSize(std::string fileName) {
 	int i = 0;
 	std::istringstream iss(lines[i]);
 	int numCols = 0;
-	int x;
+	std::string x;
 	while (iss >> x) {
 		numCols++;
 	}
 	fileStream.close();
+	//cout << numRows << " " << numCols << endl;
 	return std::tuple(numRows, numCols);
 }
 
@@ -76,121 +77,136 @@ void setMat(std::vector<std::vector<int>>& srcMat, std::string fileName) {
 		int num = 0;
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numCols; j++) {
-				//cout << "a[" << i + 1 << "][" << j + 1 << "]: ";
 				setFile >> num;
+				//cout << "a[" << i + 1 << "][" << j + 1 << "]: " << num << endl;
 				if (setFile.fail()) {
 					bool exitFlag = true;
-					cout << endl << "ERR. Wrong input data for element a["<<i+1<<"]["<<j+1<<"]" << endl;
-					cout << "Would you like to change it?" << endl;
-					cout << "0. No (Will put 0 as the weight value)" << endl << "1. Yes"  <<  endl;
+					//cout << endl << "ERR. Wrong input data for subject " << tempName << endl;
+					cout << endl << "ERR. Wrong input data for element a[" << i + 1 << "][" << j + 1 << "]" << endl;
+					cout << "Would you like to change the data?" << endl;
+					cout << "1. Yes" << endl << "2. No (Will put 0 as the value)" << endl;
 					do
 					{
-						bool choice = checkBool();
-						if (choice) {
+						errChoice choice = static_cast<errChoice>(checkInt());
+						switch (choice)
+						{
+						case errChoice::change:
 							do {
-								cout << "Enter valid number: ";
+								cout << "Enter valid data: ";
 								num = checkInt();
 							} while (num < 0);
-							exitFlag = true;
-						}
-						else {
+							break;
+						case errChoice::keep:
 							num = 0;
-							exitFlag = true;
+							break;
+						default:
+							cout << "ERR. Wrong input" << endl;
+							exitFlag = false;
+							break;
 						}
-						setFile.clear();
 						setFile.ignore(INT_MAX, ' ');
-					} while (!setFile.fail() && !exitFlag);
+						setFile.clear();
+					} while (!exitFlag && !setFile.fail());
+					setFile.ignore(INT_MAX, ' ');
 				}
 				srcMat[i][j] = num;
 			}
 		}
-		getMatrix(srcMat);
+		//showMat(srcMat);
 		break;
 	}
 	setFile.close();
 }
 
 
-void saveToFile(std::vector<std::vector<int>>& srcMat, quickSort quickS, bubbleSort bubbleS, selectionSort selS, shellSort shellS, insertionSort insS) {
-	cout << "Would you like to save the info?" << endl << "0.No" << endl << "1.Yes" << endl;
-	bool saveCh = checkBool();
-	std::ofstream save;
-	if (saveCh) {
-		std::string saveFileName;
-		saveFileName = saveFileCheck(saveFileName);
-		save.open(saveFileName, std::ios::out);
-		int numRows = static_cast<int>(srcMat.size());
-		int numCols = static_cast<int>(srcMat[0].size());
-		for (auto i = 0; i < numRows; i++) {
-			for (auto j = 0; j < numCols; j++) {
-				save << srcMat[i][j] << " ";
+void saveToFile(std::vector<std::vector<int>>& srcMat, std::shared_ptr<quickSort> quickS, std::shared_ptr<bubbleSort> bubbleS, std::shared_ptr<selectionSort> selS, std::shared_ptr<shellSort> shellS, std::shared_ptr<insertionSort> insS) {
+	bool exitFlag = true;
+	do {
+		cout << "Would you like to save the info?" << endl << "1.Yes" << endl << "2.No" << endl;
+		saveChoice saveCh = static_cast<saveChoice>(checkInt());
+		std::ofstream save;
+		if (saveCh == saveChoice::save) {
+			std::string saveFileName;
+			saveFileName = saveFileCheck(saveFileName);
+			save.open(saveFileName, std::ios::out);
+			int numRows = static_cast<int>(srcMat.size());
+			int numCols = static_cast<int>(srcMat[0].size());
+			for (auto i = 0; i < numRows; i++) {
+				for (auto j = 0; j < numCols; j++) {
+					save << srcMat[i][j] << " ";
+				}
+				save << endl;
 			}
-			save << endl;
+			save << "//" << endl;
+			save << "===================================================================================================================" << endl;
+			save << "Comparison chart" << endl;
+			save << "===================================================================================================================" << endl;
+			save
+				<< std::left
+				<< std::setw(LNG) << "#"
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << "Bubble"
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << "Selection"
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << "Inserton"
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << "Shell"
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << "Quick"
+				<< std::setw(SHRT) << "||"
+				<< endl;
+			save << "===================================================================================================================" << endl;
+			save
+				<< std::left
+				<< std::setw(LNG) << "Comparisons: "
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << bubbleS->getComps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << selS->getComps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << insS->getComps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << shellS->getComps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << quickS->getComps()
+				<< std::setw(SHRT) << "||"
+				<< endl;
+			save
+				<< std::left
+				<< std::setw(LNG) << "Swaps: "
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << bubbleS->getSwaps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << selS->getSwaps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << insS->getSwaps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << shellS->getSwaps()
+				<< std::setw(SHRT) << "||"
+				<< std::setw(MID) << quickS->getSwaps()
+				<< std::setw(SHRT) << "||"
+				<< std::right << endl;
+			save << "===================================================================================================================" << endl;
+			save << "Bubble sort" << endl;
+			bubbleS->saveMat(save);
+			save << "Selection sort" << endl;
+			selS->saveMat(save);
+			save << "Inserton sort" << endl;
+			insS->saveMat(save);
+			save << "Shell sort" << endl;
+			shellS->saveMat(save);
+			save << "Quick sort" << endl;
+			quickS->saveMat(save);
+			save.close();
 		}
-		save << "//" << endl;
-		save << "===================================================================================================================" << endl;
-		save << "Comparison chart" << endl;
-		save << "===================================================================================================================" << endl;
-		save
-			<< std::left
-			<< std::setw(LNG) << "#"
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << "Bubble"
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << "Selection"
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << "Inserton"
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << "Shell"
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << "Quick"
-			<< std::setw(SHRT) << "||"
-			<< endl;
-		save << "===================================================================================================================" << endl;
-		save
-			<< std::left
-			<< std::setw(LNG) << "Comparisons: "
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << bubbleS.getComps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << selS.getComps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << insS.getComps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << shellS.getComps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << quickS.getComps()
-			<< std::setw(SHRT) << "||"
-			<< endl;
-		save
-			<< std::left
-			<< std::setw(LNG) << "Swaps: "
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << bubbleS.getSwaps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << selS.getSwaps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << insS.getSwaps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << shellS.getSwaps()
-			<< std::setw(SHRT) << "||"
-			<< std::setw(MID) << quickS.getSwaps()
-			<< std::setw(SHRT) << "||"
-			<< std::right << endl;
-		save << "===================================================================================================================" << endl;
-		save << "Bubble sort" << endl;
-		bubbleS.saveMat(save);
-		save << "Selection sort" << endl;
-		selS.saveMat(save);
-		save << "Inserton sort" << endl;
-		insS.saveMat(save);
-		save << "Shell sort" << endl;
-		shellS.saveMat(save);
-		save << "Quick sort" << endl;
-		quickS.saveMat(save);
-		
-		save.close();
-	}
+		else if (saveCh != saveChoice::discard && saveCh != saveChoice::save) {
+			cout << "ERR. Wrong input." << endl;
+			saveCh = static_cast<saveChoice>(checkInt());
+			if (saveCh == saveChoice::save || saveCh == saveChoice::discard)
+				exitFlag = true;
+		}
+	} while (!exitFlag); ////////////////////STOPPED HERE
 }
 
 std::string saveFileCheck(std::string saveFileName) {

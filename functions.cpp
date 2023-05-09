@@ -32,7 +32,7 @@ void giveGreeting() {
 	cout << "===================================================================================================================" << endl;
 }
 
-void giveChart(quickSort quickS, bubbleSort bubbleS, selectionSort selS, shellSort shellS, insertionSort insS) {
+void giveChart(std::shared_ptr<quickSort> quickS, std::shared_ptr<bubbleSort> bubbleS, std::shared_ptr<selectionSort> selS, std::shared_ptr<shellSort> shellS, std::shared_ptr<insertionSort> insS) {
 	cout << "===================================================================================================================" << endl;
 	cout << "Comparison chart" << endl;
 	cout << "===================================================================================================================" << endl;
@@ -56,30 +56,30 @@ void giveChart(quickSort quickS, bubbleSort bubbleS, selectionSort selS, shellSo
 		<< std::left
 		<< std::setw(LNG) << "Comparisons: "
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << bubbleS.getComps()
+		<< std::setw(MID) << bubbleS->getComps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << selS.getComps()
+		<< std::setw(MID) << selS->getComps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << insS.getComps()
+		<< std::setw(MID) << insS->getComps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << shellS.getComps()
+		<< std::setw(MID) << shellS->getComps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << quickS.getComps()
+		<< std::setw(MID) << quickS->getComps()
 		<< std::setw(SHRT) << "||"
 		<< endl;
 	cout
 		<< std::left
 		<< std::setw(LNG) << "Swaps: "
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << bubbleS.getSwaps()
+		<< std::setw(MID) << bubbleS->getSwaps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << selS.getSwaps()
+		<< std::setw(MID) << selS->getSwaps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << insS.getSwaps()
+		<< std::setw(MID) << insS->getSwaps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << shellS.getSwaps()
+		<< std::setw(MID) << shellS->getSwaps()
 		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << quickS.getSwaps()
+		<< std::setw(MID) << quickS->getSwaps()
 		<< std::setw(SHRT) << "||"
 		<< std::right << endl;
 	cout << "===================================================================================================================" << endl;
@@ -134,7 +134,7 @@ void fillMatrix(std::vector<std::vector<int> >& srcMat, int operationInt, std::s
 	}
 }
 
-void getMatrix(std::vector<std::vector<int> >& srcMat) {
+void showMat(std::vector<std::vector<int> >& srcMat) {
 	int numRows = static_cast<int>(srcMat.size());
 	int numCols = static_cast<int>(srcMat[0].size());
 	for (auto i = 0; i < numRows; i++) {
