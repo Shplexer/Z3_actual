@@ -12,88 +12,8 @@ T checkInput() {
 	return userInput;
 }
 
-int checkInt() {
+int checkInputInt() {
 	return checkInput<int>();
-}
-
-bool checkBool() {
-	return checkInput<bool>();
-}
-
-void giveGreeting() {
-
-	cout << "===================================================================================================================" << endl;
-	cout << "Welcome!" << endl << "Made by Orekhov Daniil, group 423, task #3, variant 15" << endl;
-	cout << "===================================================================================================================" << endl;
-	cout << "Task: Develop a program that sorts an array using bubble, selection, insertion, shell and quick sorting methods" << endl <<
-		"Input an unsorted matrix consisting of N lines and M columns" << endl <<
-		"Output to console unsorted and sorted matrices" << endl <<
-		"Create a table that shows the effectiveness of sorting methods by comparing the number of swaps and comparisons of each method" << endl;
-	cout << "===================================================================================================================" << endl;
-}
-
-void giveChart(std::shared_ptr<quickSort> quickS, std::shared_ptr<bubbleSort> bubbleS, std::shared_ptr<selectionSort> selS, std::shared_ptr<shellSort> shellS, std::shared_ptr<insertionSort> insS) {
-	cout << "===================================================================================================================" << endl;
-	cout << "Comparison chart" << endl;
-	cout << "===================================================================================================================" << endl;
-	cout
-		<< std::left
-		<< std::setw(LNG) << "#"
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << "Bubble"
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << "Selection"
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << "Inserton"
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << "Shell"
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << "Quick"
-		<< std::setw(SHRT) << "||"
-		<< endl;
-	cout << "===================================================================================================================" << endl;
-	cout
-		<< std::left
-		<< std::setw(LNG) << "Comparisons: "
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << bubbleS->getComps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << selS->getComps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << insS->getComps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << shellS->getComps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << quickS->getComps()
-		<< std::setw(SHRT) << "||"
-		<< endl;
-	cout
-		<< std::left
-		<< std::setw(LNG) << "Swaps: "
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << bubbleS->getSwaps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << selS->getSwaps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << insS->getSwaps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << shellS->getSwaps()
-		<< std::setw(SHRT) << "||"
-		<< std::setw(MID) << quickS->getSwaps()
-		<< std::setw(SHRT) << "||"
-		<< std::right << endl;
-	cout << "===================================================================================================================" << endl;
-
-}
-
-void giveMainMenu() {
-	cout
-		<< "1. Test" << endl
-		<< "2. Load a file" << endl
-		<< "3. Manual input" << endl
-		<< "4. Random input" << endl
-		<< "5. Exit" << endl;
-	cout << "===================================================================================================================" << endl;
 }
 
 void fillMatrix(std::vector<std::vector<int> >& srcMat, int operationInt, std::string fileName) {
@@ -110,17 +30,17 @@ void fillMatrix(std::vector<std::vector<int> >& srcMat, int operationInt, std::s
 		for (int i = 0; i < numRows; i++) {
 			for (int j = 0; j < numCols; j++) {
 				cout << "a[" << i + 1 << "][" << j + 1 << "]: ";
-				srcMat[i][j] = checkInt();
+				srcMat[i][j] = checkInputInt();
 			}
 		}
 		break;
 	case fileMenuChoice::random:
 		cout << "Enter lowest random number: " << endl;
-		int lowest = checkInt();
+		int lowest = checkInputInt();
 		int highest = 0;
 		do{
 			cout << "Enter highest random number: " << endl;
-			highest = checkInt();
+			highest = checkInputInt();
 		} while (highest < lowest);
 		int range = (highest - lowest) + 1;
 		srand(static_cast<unsigned int>(time(NULL)));
@@ -134,18 +54,7 @@ void fillMatrix(std::vector<std::vector<int> >& srcMat, int operationInt, std::s
 	}
 }
 
-void showMat(std::vector<std::vector<int> >& srcMat) {
-	int numRows = static_cast<int>(srcMat.size());
-	int numCols = static_cast<int>(srcMat[0].size());
-	for (auto i = 0; i < numRows; i++) {
-		for (auto j = 0; j < numCols; j++) {
-			cout << srcMat[i][j] << " ";
-		}
-		cout << endl;
-	}
-}
-
-std::string makeLineGood() {
+std::string stringInput() {
 	std::string input{ "==" };
 	std::getline(cin >> std::ws, input);
 	for (auto i = 0; i < input.size(); i++) {
@@ -156,7 +65,7 @@ std::string makeLineGood() {
 	return input;
 }
 
-std::string getGoodLine(std::string input) {
+std::string stringOutput(std::string input) {
 	std::string temp = input;
 	for (auto i = 0; i < temp.size(); i++) {
 		if (temp[i] == '_') {
@@ -164,4 +73,77 @@ std::string getGoodLine(std::string input) {
 		}
 	}
 	return temp;
+}
+int positiveInput(){
+	int input = 0;
+	do {
+		input = checkInputInt();
+		if (input <= 0)
+			cout << "ERR. Wrong input. Try again." << endl;
+	} while (input <= 0);
+	return input;
+}
+std::tuple<std::vector<std::vector<int> >, std::string> mainMenuControl(){
+	std::string fileName{};
+	int numRows = 0;
+	int numCols = 0;
+	bool exitFlag = true;
+	fileMenuChoice choice;
+
+	do {
+		exitFlag = true;
+		cout << "===================================================================================================================" << endl;
+		giveMainMenu();
+		choice = static_cast<fileMenuChoice>(checkInputInt());
+		switch (choice)
+		{
+		case fileMenuChoice::test:
+			launchTest();
+			exitFlag = false;
+			break;
+		case fileMenuChoice::file:
+			std::tie(fileName, exitFlag) = openFile();
+			if (exitFlag) {
+				std::tie(numRows, numCols, exitFlag) = countMatSize(fileName);
+			}
+			break;
+		case fileMenuChoice::empty:
+			cout << "Rows: ";
+			numRows = positiveInput();
+			cout << "Columns: ";
+			numCols = positiveInput();
+			break;
+		case fileMenuChoice::random:
+			cout << "Rows: ";
+			numRows = positiveInput();
+			cout << "Columns: ";
+			numCols = positiveInput();
+			break;
+		case fileMenuChoice::exit:
+			cout << "Exiting the program...";
+			std::exit(0);
+		default:
+			cout << "ERR. Wrong input, try again" << endl;
+			exitFlag = false;
+			break;
+		}
+	} while (!exitFlag);
+	std::vector<std::vector<int> > mat(numRows, std::vector<int>(numCols));
+	if (choice != fileMenuChoice::test) {
+		fillMatrix(mat, static_cast<int>(choice), fileName);
+	}
+	return std::tuple(mat, fileName);
+}
+
+void sortAll(std::vector<std::shared_ptr<ISort>> sortMethods, std::vector<std::vector<int>> mat) {
+	cout << "Input matrix: " << endl;
+	showMat(mat);
+	for (int i = 0; i < sortMethods.size(); i++) {
+		cout << "===================================================================================================================" << endl;
+		sortMethods[i]->setMat(mat);
+		sortMethods[i]->sort();
+		cout << sortMethods[i]->getName() << endl;
+		sortMethods[i]->showMat();
+		cout << "Swaps: " << sortMethods[i]->getSwaps() << " Comps: " << sortMethods[i]->getComps() << endl;
+	}
 }

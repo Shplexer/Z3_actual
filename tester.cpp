@@ -10,8 +10,8 @@ void launchTest() {
 
 	std::vector<std::vector<int>> controlVec(TESTSIZE, std::vector<int>(TESTSIZE));
 	std::vector<std::vector<int>> testVec(TESTSIZE, std::vector<int>(TESTSIZE));
-	createTestVec(controlVec, testCreation::control);
-	createTestVec(testVec, testCreation::test);
+	createTestMat(controlVec, testCreation::control);
+	createTestMat(testVec, testCreation::test);
 
 	std::vector<std::shared_ptr<ISort>>sortMethods{ bubbleS, quickS, selS, shellS, insS };
 	for (int i = 0; i < sortMethods.size(); i++) {
@@ -22,7 +22,7 @@ void launchTest() {
 	}
 }
 
-void createTestVec(std::vector<std::vector<int>>& testVec, testCreation choice) {
+void createTestMat(std::vector<std::vector<int>>& testVec, testCreation choice) {
 	int numRows = static_cast<int>(testVec.size());
 	int numCols = static_cast<int>(testVec[0].size());
 	switch (choice)

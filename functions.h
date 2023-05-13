@@ -1,35 +1,17 @@
 #pragma once
 
 #include <time.h>
-#include "Z3.h"
 #include "classes.h"
+#include "tester.h"
+#include "fileFunc.h"
 
-#define CLASSWORDLEN 6
 
-//template <typename T>
-//void sortControl(std::vector<std::vector<int>> srcMat, T& sortMethod) {
-//	cout << "===========" << endl;
-//	std::string methName = typeid(T).name();
-//	cout << methName.erase(NULL, CLASSWORDLEN) << ":" << endl;
-//	std::vector<std::vector<int>> mat = srcMat;
-//	for (auto i = 0; i < mat.size(); i++) {
-//		sortMethod.sort(mat[i]);
-//	}
-//	sortMethod.setMat(mat);
-//	sortMethod.showMat();
-//	//cout << "Swaps: " << sortMethod.getSwaps() << " Comps: " << sortMethod.getComps() << endl;
-//}
+enum class fileMenuChoice { test = 1, file, empty, random, exit };
 
-//void giveChart(quickSort, bubbleSort, selectionSort, shellSort, insertionSort);
-void giveChart(std::shared_ptr<quickSort>, std::shared_ptr<bubbleSort>, std::shared_ptr<selectionSort>, std::shared_ptr<shellSort>, std::shared_ptr<insertionSort>);
-void giveGreeting();
-void giveMainMenu();
-void fillMatrix(std::vector<std::vector<int> >& srcMat, int operationInt, std::string fileName);
-void showMat(std::vector<std::vector<int> >& srcMat);
-//void saveToFile();
-std::string makeLineGood();
-std::string getGoodLine(std::string input);
-int checkInt();
-bool checkBool();
-
+void fillMatrix(std::vector<std::vector<int> >& srcMat, int operationInt, std::string fileName);	//заполение матрицы
+std::string stringInput();							//ввод строки вручную с заменой пробелов на "_"
+std::string stringOutput(std::string input);		//при выводе строк происходит проверка на "_" и замена на пробел
+int checkInputInt();								//проверка корректности введенных данных типа "int"
+std::tuple<std::vector<std::vector<int> >, std::string> mainMenuControl();	//управление внутри главного меню
+void sortAll(std::vector<std::shared_ptr<ISort>> sortMethods, std::vector<std::vector<int>> mat);	//сортировка всеми методами
 

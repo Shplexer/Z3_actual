@@ -131,15 +131,16 @@
     <ClCompile Include="classes.cpp" />
     <ClCompile Include="fileFunc.cpp" />
     <ClCompile Include="functions.cpp" />
+    <ClCompile Include="interface.cpp" />
     <ClCompile Include="tester.cpp" />
-    <ClCompile Include="Z3.cpp" />
+    <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="classes.h" />
     <ClInclude Include="fileFunc.h" />
     <ClInclude Include="functions.h" />
+    <ClInclude Include="interface.h" />
     <ClInclude Include="tester.h" />
-    <ClInclude Include="Z3.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="template.txt" />

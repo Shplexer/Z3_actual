@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Z3.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="classes.cpp">
@@ -30,11 +30,11 @@
     <ClCompile Include="tester.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="interface.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Z3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="classes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -45,6 +45,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="tester.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="interface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

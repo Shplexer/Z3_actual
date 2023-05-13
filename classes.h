@@ -43,8 +43,9 @@ public:
 	}
 	void sort();
 	void sortRecursive(std::vector<int>& src, int start, int end);
-	int sortDivide(std::vector<int>& src, int start, int end);
+	int sortPivot(std::vector<int>& src, int start, int end);
 private:
+
 };
 
 class bubbleSort : public ISort {

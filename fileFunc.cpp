@@ -1,27 +1,27 @@
 #include "fileFunc.h"
 
-std::string openFile() {
+std::tuple<std::string, bool> openFile() {
 	std::ifstream fileIn;
 	bool exitFlag = false;
 	bool returnExit = false;
 	fileNameChoice choice;
 	std::error_code ec{};
 	cout << "Enter the name of a source file: ";
-	std::string fileName = makeLineGood();
+	std::string fileName = stringInput();
 	do {
 		exitFlag = false;
 		fileName = fileNameCheck(fileName);
 		fileIn.open(fileName);
 		if (!std::filesystem::is_regular_file(fileName, ec) || !fileIn.is_open()) {
 			cout << endl << "The name of the file you have entered does not exist." << endl
-				<< "1.Change the name of the file" << endl
-				<< "2.Exit" << endl;
-			choice = static_cast<fileNameChoice>(checkInt());
+				<< "1. Change the name of the file" << endl
+				<< "2. Exit" << endl;
+			choice = static_cast<fileNameChoice>(checkInputInt());
 			switch (choice)
 			{
 			case fileNameChoice::change:
 				cout << "Enter the name of a source file: ";
-				fileName = fileNameCheck(makeLineGood());
+				fileName = fileNameCheck(stringInput());
 				break;
 			case fileNameChoice::exit:
 				cout << "Exiting..." << endl;
@@ -41,11 +41,12 @@ std::string openFile() {
 		}
 	} while (!exitFlag);
 	fileIn.close();
-	return fileName;
+	return std::tuple(fileName, returnExit);
 }
 
-std::tuple<int, int> countMatSize(std::string fileName) {
+std::tuple<int, int, bool> countMatSize(std::string fileName) {
 	std::ifstream fileStream;
+	bool exitFlag = true;
 	fileStream.open(fileName);
 	std::vector<std::string> lines;
 	std::string line;
@@ -55,16 +56,30 @@ std::tuple<int, int> countMatSize(std::string fileName) {
 		lines.push_back(line);
 	}
 	int numRows = static_cast<int>(lines.size());
-	int i = 0;
-	std::istringstream iss(lines[i]);
+	//int i = 0;
 	int numCols = 0;
+	std::istringstream iss(lines[0]);
 	std::string x;
 	while (iss >> x) {
 		numCols++;
 	}
+
+	for (int i = 0; i < numRows; i++) {
+		std::istringstream issCheck(lines[i]);
+		int tempNumCols = 0;
+		std::string xCheck;
+		while (issCheck >> xCheck) {
+			tempNumCols++;
+		}
+		if (tempNumCols != numCols) {
+			cout << "===================================================================================================================" << endl;
+			cout << "ERR. The number of columns in different rows does not match. Try again" << endl;
+			exitFlag = false;
+		}
+	}
 	fileStream.close();
 	//cout << numRows << " " << numCols << endl;
-	return std::tuple(numRows, numCols);
+	return std::tuple(numRows, numCols, exitFlag);
 }
 
 void setMat(std::vector<std::vector<int>>& srcMat, std::string fileName) {
@@ -81,19 +96,18 @@ void setMat(std::vector<std::vector<int>>& srcMat, std::string fileName) {
 				//cout << "a[" << i + 1 << "][" << j + 1 << "]: " << num << endl;
 				if (setFile.fail()) {
 					bool exitFlag = true;
-					//cout << endl << "ERR. Wrong input data for subject " << tempName << endl;
 					cout << endl << "ERR. Wrong input data for element a[" << i + 1 << "][" << j + 1 << "]" << endl;
 					cout << "Would you like to change the data?" << endl;
 					cout << "1. Yes" << endl << "2. No (Will put 0 as the value)" << endl;
 					do
 					{
-						errChoice choice = static_cast<errChoice>(checkInt());
+						errChoice choice = static_cast<errChoice>(checkInputInt());
 						switch (choice)
 						{
 						case errChoice::change:
 							do {
 								cout << "Enter valid data: ";
-								num = checkInt();
+								num = checkInputInt();
 							} while (num < 0);
 							break;
 						case errChoice::keep:
@@ -119,14 +133,13 @@ void setMat(std::vector<std::vector<int>>& srcMat, std::string fileName) {
 }
 
 
-void saveToFile(std::vector<std::vector<int>>& srcMat, std::shared_ptr<quickSort> quickS, std::shared_ptr<bubbleSort> bubbleS, std::shared_ptr<selectionSort> selS, std::shared_ptr<shellSort> shellS, std::shared_ptr<insertionSort> insS) {
+void saveToFile(std::string saveFileName, std::vector<std::vector<int>>& srcMat, std::shared_ptr<quickSort> quickS, std::shared_ptr<bubbleSort> bubbleS, std::shared_ptr<selectionSort> selS, std::shared_ptr<shellSort> shellS, std::shared_ptr<insertionSort> insS) {
 	bool exitFlag = true;
 	do {
 		cout << "Would you like to save the info?" << endl << "1.Yes" << endl << "2.No" << endl;
-		saveChoice saveCh = static_cast<saveChoice>(checkInt());
+		saveChoice saveCh = static_cast<saveChoice>(checkInputInt());
 		std::ofstream save;
 		if (saveCh == saveChoice::save) {
-			std::string saveFileName;
 			saveFileName = saveFileCheck(saveFileName);
 			save.open(saveFileName, std::ios::out);
 			int numRows = static_cast<int>(srcMat.size());
@@ -202,11 +215,11 @@ void saveToFile(std::vector<std::vector<int>>& srcMat, std::shared_ptr<quickSort
 		}
 		else if (saveCh != saveChoice::discard && saveCh != saveChoice::save) {
 			cout << "ERR. Wrong input." << endl;
-			saveCh = static_cast<saveChoice>(checkInt());
+			saveCh = static_cast<saveChoice>(checkInputInt());
 			if (saveCh == saveChoice::save || saveCh == saveChoice::discard)
 				exitFlag = true;
 		}
-	} while (!exitFlag); ////////////////////STOPPED HERE
+	} while (!exitFlag);
 }
 
 std::string saveFileCheck(std::string saveFileName) {
@@ -219,7 +232,7 @@ std::string saveFileCheck(std::string saveFileName) {
 		std::error_code ec{};
 		if (!checkStream.is_open()) {
 			cout << "Please enter a path to the file you wish to save your project to: ";
-			saveFileName = fileNameCheck(makeLineGood());
+			saveFileName = fileNameCheck(stringInput());
 			//if (!std::filesystem::is_regular_file(saveFileName, ec)) {
 			//	cout << "Invalid data." << endl;
 			//	continue;
@@ -232,13 +245,13 @@ std::string saveFileCheck(std::string saveFileName) {
 				"2. Save here" << endl;
 			do {
 				exitFlag = true;
-				errChoice choice = static_cast<errChoice>(checkInt());
+				errChoice choice = static_cast<errChoice>(checkInputInt());
 				switch (choice)
 				{
 				case errChoice::change:
 					cout << "Enter a path to the file: ";
-					//saveFileName = makeLineGood();
-					saveFileName = fileNameCheck(makeLineGood());
+					//saveFileName = stringInput();
+					saveFileName = fileNameCheck(stringInput());
 					break;
 				case errChoice::keep:
 					exitAllFlag = true;
@@ -272,7 +285,7 @@ std::string fileNameCheck(std::string inputName) {
 				//cout << inputName[i] << " == " << errName[k] << " | " << inputName << " == " << errName2[j] << endl;
 				if (inputName[i] == errName[k] || inputName == errName2[j]) {
 					cout << "ERR. File name contains illegal characters. Try again." << endl;
-					inputName = makeLineGood();
+					inputName = stringInput();
 					exitFlag = false;
 					break;
 				}

@@ -44,23 +44,20 @@ void ISort::saveMat(std::ofstream& stream) {
 void quickSort::sort() {
 	//cout << "quickSort" << endl;
 	for(int i = 0; i < mat.size(); i++){
-	sortRecursive(mat[i], 0, static_cast<int>(mat[i].size()) - 1);
+		sortRecursive(mat[i], 0, static_cast<int>(mat[i].size()) - 1);
 	}
 }
 
 void quickSort::sortRecursive(std::vector<int>& src, int start, int end) {
-	if (start >= end) {
-		return;
-	}
-	else{
-		int pivot = sortDivide(src, start, end);
+	if(start < end){
+		int pivot = sortPivot(src, start, end);
 
 		sortRecursive(src, start, (pivot - 1));
 		sortRecursive(src, (pivot + 1), end);
 	}
 }
 
-int quickSort::sortDivide(std::vector<int>& src, int start, int end) {
+int quickSort::sortPivot(std::vector<int>& src, int start, int end) {
 	int pivot = src[end];
 	int index = start;
 	for (int i = start; i < end; i++) {
@@ -69,9 +66,6 @@ int quickSort::sortDivide(std::vector<int>& src, int start, int end) {
 				numOfSwaps++;
 				std::swap(src[i], src[index]);
 			}
-			//int temp = src[i];
-			//src[i] = src[index];
-			//src[index] = temp;
 			index++;
 		}
 
@@ -88,20 +82,13 @@ void bubbleSort::sort() {
 	//cout << "bubble" << endl;
 	for (int k = 0; k < mat.size(); k++) {
 		std::vector<int> temp = mat[k];
-		for (auto i = 0; i < temp.size(); ++i) {
-			for (auto j = 0; j < temp.size() - 1; ++j) {
+		for (auto i = 0; i < temp.size(); i++) {
+			for (auto j = 0; j < temp.size() - 1; j++) {
 				numOfComps++;
-				//for (int k = 0; k < src.size(); k++) {
-				//	cout << src[k] << " ";
-				//}
-				//cout << endl;
-				//cout << src[j] << " " << src[j + 1];
 				if (temp[j] > temp[j + 1]) {
 					numOfSwaps++;
 					std::swap(temp[j], temp[j + 1]);
-					//cout << " swap ";
 				}
-				//cout << endl;
 			}
 		}
 		mat[k] = temp;
@@ -115,14 +102,11 @@ void selectionSort::sort() {
 		for (auto i = 0; i < temp.size() - 1; i++) {
 			int minInd = i;
 			for (auto j = i + 1; j < temp.size(); j++) {
-				// Select the minimum element in each loop.
 				numOfComps++;
-				if (temp[j] < temp[minInd])
-				{
+				if (temp[j] < temp[minInd]){
 					minInd = j;
 				}
 			}
-			// put min at the correct position
 			if (temp[minInd] != temp[i]) {
 				std::swap(temp[minInd], temp[i]);
 				numOfSwaps++;
@@ -160,6 +144,7 @@ void insertionSort::sort() {
 	//cout << "insertion sort" << endl;
 	for (int k = 0; k < mat.size(); k++) {
 		std::vector<int> temp = mat[k];
+
 		for (int i = 1; i < static_cast<int>(temp.size()); i++)
 		{
 			int key = temp[i];
@@ -167,7 +152,7 @@ void insertionSort::sort() {
 			while (j >= 0 && temp[j] > key)
 			{
 				temp[j + 1] = temp[j];
-				j = j - 1;
+				j--;
 				numOfSwaps++;
 			}
 			temp[j + 1] = key;
